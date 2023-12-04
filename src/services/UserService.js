@@ -67,6 +67,7 @@ const loginUser = (userLogin)=>{
                     message: 'The password or user is incorrect',
                 })
             }
+            const user_id = checkUser._id
             const access_token = await generalAccessToken({
                 id: checkUser.id,
                 role: checkUser.role
@@ -79,6 +80,7 @@ const loginUser = (userLogin)=>{
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
+                user_id,
                 access_token, 
                 refresh_token
             })
