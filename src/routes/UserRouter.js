@@ -5,11 +5,18 @@ const { authMiddleware } = require('../middleware/authMiddleware');
 
 router.post('/register', userController.createUser)
 router.post('/login', userController.loginUser)
+
 router.put('/update-user/:id', authMiddleware(['Admin']), userController.updateUser)
 router.delete('/delete-user/:id', authMiddleware(['Admin']), userController.deleteUser)
+
 router.get('/getAll-user', authMiddleware(['Admin']), userController.getAllUser)
+<<<<<<< HEAD
 router.get('/getDetails-user/:id', authMiddleware(['Admin']), userController.getDetailsUser)
 router.get('/getInfo/:id',userController.getInfo)
+=======
+
+router.get('/getDetails-user/:id', userController.getDetailsUser)
+>>>>>>> a81a783306bcc34627f637836a93d872a45affbe
 
 router.post('/refresh-token', userController.refreshToken),
 
