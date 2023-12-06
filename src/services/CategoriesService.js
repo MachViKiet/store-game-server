@@ -10,7 +10,7 @@ const createCategory = (newCategory)=>{
                 cateId: cateId
             })
             if(checkCategory!==null){
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The name of Category is already'
                 })
@@ -18,7 +18,7 @@ const createCategory = (newCategory)=>{
             if(checkCategory===null){
                 const createCategory = await Category.create({
                     cateId, 
-                    cateName
+                    cateName,
                 })
                 if(createCategory){
                     resolve({
@@ -38,15 +38,15 @@ const updateCategory = (id, data)=>{
     return new Promise(async(resolve, reject)=>{
         try{
             const checkCategory = await Category.findOne({
-                _id: id
+                cateId: id
             })
             if(checkCategory === null){
-                resolve({
-                    status: 'OK',
+                reject({
+                    status: 'ERR',
                     message: 'The Category is not defined'
                 })
             }
-           const updatedCategory = await Category.findByIdAndUpdate(id, data, {new: true})
+           const updatedCategory = await Category.findOneAndUpdate({ cateId: id }, { $set: data }, { new: true })
             resolve({
                 status: 'OK',
                 message: 'Update Category success',
@@ -58,15 +58,31 @@ const updateCategory = (id, data)=>{
     })
 }
 
+const getAllCategory = ()=>{
+    return new Promise(async(resolve, reject)=>{
+        try{
+            const allCategories = await Category.find()
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: allCategories
+
+            })
+        }catch(e){
+            reject(e)
+        }
+    })
+}
+
 const getDetailsCategory = (id)=>{
     return new Promise(async(resolve, reject)=>{
         try{
             const category = await Category.findOne({
-                _id: id
+                cateId: id
             })
             if(category === null){
-                resolve({
-                    status: 'OK',
+                reject({
+                    status: 'ERR',
                     message: 'The Category is not defined'
                 })
             }
@@ -85,15 +101,15 @@ const deleteCategory = (id)=>{
     return new Promise(async(resolve, reject)=>{
         try{
             const checkCategory = await Category.findOne({
-                _id: id
+                cateId: id
             })
             if(checkCategory === null){
-                resolve({
-                    status: 'OK',
+                reject({
+                    status: 'ERR',
                     message: 'The Category is not defined'
                 })
             }
-            await Category.findByIdAndDelete(id)
+            await Category.findOneAndDelete({ cateId: id })
             resolve({
                 status: 'OK',
                 message: 'Delete Category success',
@@ -107,6 +123,7 @@ const deleteCategory = (id)=>{
 module.exports = {
     createCategory,
     updateCategory,
+    getAllCategory,
     getDetailsCategory,
     deleteCategory
 }

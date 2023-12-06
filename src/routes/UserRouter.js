@@ -9,6 +9,8 @@ router.put('/update-user/:id', authMiddleware(['Admin']), userController.updateU
 router.delete('/delete-user/:id', authMiddleware(['Admin']), userController.deleteUser)
 router.get('/getAll-user', authMiddleware(['Admin']), userController.getAllUser)
 router.get('/getDetails-user/:id', authMiddleware(['Admin']), userController.getDetailsUser)
+router.get('/getInfo/:id',userController.getInfo)
+
 router.post('/refresh-token', userController.refreshToken),
 
 router.put('/update-cart/:id', authMiddleware(['Customer']), userController.updateCart),

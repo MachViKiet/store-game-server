@@ -140,6 +140,19 @@ const getDetailsUser = async(req,res)=>{
     }
 }
 
+const getInfo = async(req,res)=>{
+    try{
+        
+
+        const response = await UserService.getInfo(userId)
+        return res.status(200).json(response)
+    }catch(e){
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 const refreshToken = async(req,res)=>{
     try{
         const token = req.headers.token.split(' ')[1]
@@ -289,6 +302,7 @@ module.exports = {
     deleteUser,
     getAllUser,
     getDetailsUser,
+    getInfo,
     refreshToken,
 
     updateCart,

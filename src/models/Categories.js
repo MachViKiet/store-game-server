@@ -4,8 +4,6 @@ const categoriesSchema = new mongoose.Schema(
     {
         cateId: {type: String, require: true},
         cateName: {type: String, require: true},
-        
-        productsOfCate: {type: Array, require: true},
 
     },
     {

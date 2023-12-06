@@ -1,23 +1,24 @@
 const ProductService = require('../services/ProductService')
+const User = require("../models/Users");
 
 const createProduct = async (req, res) => {
     try {
-        const { title, release_date, categories, price, img_url, description, rating, reviews_count } = req.body
+        const { title, release_date, categories, price, banner_url, desc, rating, reviews_count, developer, short_desc, img_urls, vid_urls, publisher } = req.body;
 
-        if(!title || !release_date || !categories || price == null || !img_url || !description || !rating || !reviews_count){
-            return res.status(200).json({
+        if (!title || !release_date || !categories || price == null || !banner_url || !desc || !rating || !reviews_count || !developer || !short_desc || !img_urls || !vid_urls ||!publisher) {
+            return res.status(404).json({
                 status: 'ERR',
                 message: 'The input is required'
-            })
+            });
         }
-        const response = await ProductService.createProduct(req.body)
-        return res.status(200).json(response)
 
+        const response = await ProductService.createProduct(req.body);
+        return res.status(200).json(response);
 
     } catch (e) {
         return res.status(404).json({
             message: e
-        })
+        });
     }
 }
 
@@ -26,7 +27,7 @@ const updateProduct = async(req,res)=>{
         const productId = req.params.id
         const data = req.body
         if(!productId){
-            return res.status(200).json({
+            return res.status(404).json({
                 status: 'ERR', 
                 message: 'The productId is required'
             })
@@ -41,12 +42,34 @@ const updateProduct = async(req,res)=>{
     }
 }
 
+const updateAllProductUrls = async (req, res) => {
+    try {
+        const response = await ProductService.updateAllProductUrls();
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || 'Internal Server Error'
+        });
+    }
+};
+
+const getAllProduct = async(req,res)=>{
+    try{
+        const response = await ProductService.getAllProduct()
+        return res.status(200).json(response)
+    }catch(e){
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 const getDetailsProduct = async(req,res)=>{
     try{
         const productId = req.params.id
         //const token = req.headers
         if(!productId){
-            return res.status(200).json({
+            return res.status(404).json({
                 status: 'ERR', 
                 message: 'The productId is required'
             })
@@ -61,12 +84,43 @@ const getDetailsProduct = async(req,res)=>{
     }
 }
 
+const getTypeProduct = async(req,res)=>{
+    try{
+        const productCate = req.params.type
+        //const token = req.headers
+        if(!productCate){
+            return res.status(404).json({
+                status: 'ERR', 
+                message: 'The category of product is required'
+            })
+        }
+
+        const response = await ProductService.getTypeProduct(productCate)
+        return res.status(200).json(response)
+    }catch(e){
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
+const getTopRatedProducts = async (req, res) => {
+    try {
+        const response = await ProductService.getTopRatedProducts();
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        });
+    }
+};
+
 const deleteProduct = async(req,res)=>{
     try{
         const productId = req.params.id
         //const token = req.headers
         if(!productId){
-            return res.status(200).json({
+            return res.status(404).json({
                 status: 'ERR', 
                 message: 'The productId is required'
             })
@@ -84,6 +138,10 @@ const deleteProduct = async(req,res)=>{
 module.exports = {
     createProduct,
     updateProduct,
+    updateAllProductUrls,
+    getTypeProduct,
+    getAllProduct,
+    getTopRatedProducts,
     getDetailsProduct,
     deleteProduct
 }
