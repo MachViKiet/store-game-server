@@ -8,9 +8,6 @@ const createUser= async(req,res)=>{
         const isCheckEmail = reg.test(email)
         const allowedRoles =['Customer', 'Seller'];
 
-        console.log(req.body)
-
-
         if(!name || !email || !password || !confirmPassword || !phone || !role){
             return res.status(404).json({
                 status: 'ERR',
@@ -142,7 +139,6 @@ const getDetailsUser = async(req,res)=>{
 const getInfo = async(req,res)=>{
     try{
         
-
         const response = await UserService.getInfo(userId)
         return res.status(200).json(response)
     }catch(e){
