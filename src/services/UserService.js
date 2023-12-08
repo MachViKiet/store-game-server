@@ -13,10 +13,7 @@ const createUser = (newUser)=>{
             })
 
             if(checkUser!==null){
-                reject({
-                    status: 'ERR',
-                    message: 'The email is already'
-                })
+                reject('The email is already');
             }
 
             const hash = bcrypt.hashSync(password, 10)
@@ -55,17 +52,11 @@ const loginUser = (userLogin)=>{
             })
 
             if(checkUser === null){
-                reject({
-                    status: 'ERR',
-                    message: 'The user is not defined'
-                })
+                reject('The user is not defined');
             }
             const comparePassword = bcrypt.compareSync(password, checkUser.password)
             if(!comparePassword){
-                reject({
-                    status: 'ERR',
-                    message: 'The password or user is incorrect',
-                })
+                reject('The password or username is incorrect');
             }
             const user_id = checkUser._id
             const access_token = await generalAccessToken({
@@ -97,10 +88,7 @@ const updateUser = (id, data)=>{
                 _id: id
             })
             if(checkUser === null){
-                reject({
-                    status: 'ERR',
-                    message: 'The user is not defined'
-                })
+                reject('The user is not defined');
             }
            const updatedUser = await User.findByIdAndUpdate(id, data, {new: true})
             resolve({
@@ -121,10 +109,7 @@ const deleteUser = (id)=>{
                 _id: id
             })
             if(checkUser === null){
-                reject({
-                    status: 'ERR',
-                    message: 'The user is not defined'
-                })
+                reject('The user is not defined');
             }
             await User.findByIdAndDelete(id)
             resolve({
@@ -160,10 +145,7 @@ const getDetailsUser = (id)=>{
                 _id: id
             })
             if(user === null){
-                reject({
-                    status: 'ERR',
-                    message: 'The user is not defined'
-                })
+                reject('The user is not defined');
             }
             resolve({
                 status: 'OK',
@@ -258,10 +240,7 @@ const updateCart = (userId, updatedArr) => {
 
             // Check if the user exists
             if (!user) {
-                reject({
-                    status: 'ERR',
-                    message: 'The user is not defined'
-                })
+                reject('The user is not defined');
             }
 
             // Get the current cart from the user or initialize an empty array
@@ -269,10 +248,7 @@ const updateCart = (userId, updatedArr) => {
 
             // Check if updatedArr is an array
             if (!Array.isArray(updatedArr)) {
-                reject({
-                    status: 'ERR',
-                    message: 'Invalid data format. updatedArr must be an array.'
-                })
+                reject('Invalid data format. updatedArr must be an array.');
             }
 
             for (const updatedProduct of updatedArr) {
@@ -280,10 +256,7 @@ const updateCart = (userId, updatedArr) => {
                 const existingProduct = currentCart.find(item => item.title === updatedProduct.title);
 
                 if (existingProduct) {
-                    reject({
-                        status: 'ERR',
-                        message: 'The Product is already in the cart'
-                    })
+                    reject('The Product is already in the cart');
                 } else {
                     // Check if the product exists in the database
                     const checkProduct = await Product.findOne({
@@ -291,10 +264,7 @@ const updateCart = (userId, updatedArr) => {
                     });
 
                     if (!checkProduct) {
-                        reject({
-                            status: 'ERR',
-                            message: 'The Product is not defined'
-                        })
+                        reject('The Product is not defined');
                     }else{
                         // If the product doesn't exist in the cart, add it
                         currentCart.push({ ...updatedProduct });
@@ -326,10 +296,7 @@ const deleteCart = (userId, deletedArr) => {
     
             // Check if the user exists
             if (!user) {
-                reject({
-                    status: 'ERR',
-                    message: 'The user is not defined'
-                })
+                reject('The user is not defined');
             }
     
             // Get the current cart from the user or initialize an empty array
@@ -337,10 +304,7 @@ const deleteCart = (userId, deletedArr) => {
     
             // Check if updatedArr is an array
             if (!Array.isArray(deletedArr)) {
-                reject({
-                    status: 'ERR',
-                    message: 'Invalid data format. deletedArr must be an array.'
-                })
+                reject('Invalid data format. deletedArr must be an array.');
             }
     
             for(const deletedProduct of deletedArr){
@@ -350,10 +314,7 @@ const deleteCart = (userId, deletedArr) => {
                     // If the product exists in the cart, remove it
                     currentCart.splice(productIndex, 1);
                 } else {
-                    reject({
-                        status: 'ERR',
-                        message: 'The Product is not in the cart'
-                    })
+                    reject('The Product is not in the cart');
                 }
             }
     
@@ -382,10 +343,7 @@ const updateWishList = (userId, updatedArr) => {
     
             // Check if the user exists
             if (!user) {
-                reject({
-                    status: 'ERR',
-                    message: 'The user is not defined'
-                })
+                reject('The user is not defined');
             }
     
             // Get the current wishlist from the user or initialize an empty array
@@ -393,10 +351,7 @@ const updateWishList = (userId, updatedArr) => {
     
             // Check if updatedArr is an array
             if (!Array.isArray(updatedArr)) {
-                reject({
-                    status: 'ERR',
-                    message: 'Invalid data format. updatedArr must be an array.'
-                })
+                reject('Invalid data format. updatedArr must be an array.');
             }
     
             for (const updatedProduct of updatedArr) {
@@ -404,10 +359,7 @@ const updateWishList = (userId, updatedArr) => {
                 const existingProduct = currentWishList.find(item => item.title === updatedProduct.title);
     
                 if (existingProduct) {
-                    reject({
-                        status: 'ERR',
-                        message: 'The Product is already in the WishList'
-                    })
+                    reject('The Product is already in the WishList');
                 } else {
                     // Check if the product exists in the database
                     const checkProduct = await Product.findOne({
@@ -415,10 +367,7 @@ const updateWishList = (userId, updatedArr) => {
                     });
     
                     if (!checkProduct) {
-                        reject({
-                            status: 'ERR',
-                            message: 'The Product is not defined'
-                        })
+                        reject('The Product is not defined');
                     }else{
                         // If the product doesn't exist in the wishlist, add it
                         currentWishList.push({ ...updatedProduct });
@@ -450,10 +399,7 @@ const deleteWishList = (userId, deletedArr) => {
     
             // Check if the user exists
             if (!user) {
-                reject({
-                    status: 'ERR',
-                    message: 'The user is not defined'
-                })
+                reject('The user is not defined');
             }
     
             // Get the current wishlist from the user or initialize an empty array
@@ -461,10 +407,7 @@ const deleteWishList = (userId, deletedArr) => {
     
             // Check if updatedArr is an array
             if (!Array.isArray(deletedArr)) {
-                reject({
-                    status: 'ERR',
-                    message: 'Invalid data format. deletedArr must be an array.'
-                })
+                reject('Invalid data format. deletedArr must be an array.');
             }
     
             for(const deletedProduct of deletedArr){
@@ -474,10 +417,7 @@ const deleteWishList = (userId, deletedArr) => {
                     // If the product exists in the wishlist, remove it
                     currentWishList.splice(productIndex, 1);
                 } else {
-                    reject({
-                        status: 'ERR',
-                        message: 'The Product is not in the wishlist'
-                    })
+                    reject('The Product is not in the wishlist');
                 }
             }
     
@@ -506,10 +446,7 @@ const updateTransHis = (userId, updatedArr) => {
     
             // Check if the user exists
             if (!user) {
-                reject({
-                    status: 'ERR',
-                    message: 'The user is not defined'
-                })
+                reject('The user is not defined');
             }
     
             // Get the current transHistory from the user or initialize an empty array
@@ -517,10 +454,7 @@ const updateTransHis = (userId, updatedArr) => {
     
             // Check if updatedArr is an array
             if (!Array.isArray(updatedArr)) {
-                reject({
-                    status: 'ERR',
-                    message: 'Invalid data format. updatedArr must be an array.'
-                })
+                reject('Invalid data format. updatedArr must be an array.');
             }
     
             for (const updatedProduct of updatedArr) {
@@ -528,10 +462,7 @@ const updateTransHis = (userId, updatedArr) => {
                 const existingProduct = currentTransHis.find(item => item.title === updatedProduct.title);
     
                 if (existingProduct) {
-                    reject({
-                        status: 'ERR',
-                        message: 'The Product is already in the transHistory'
-                    })
+                    reject('The Product is already in the transHistory');
                 } else {
                     // Check if the product exists in the database
                     const checkProduct = await Product.findOne({
@@ -539,10 +470,7 @@ const updateTransHis = (userId, updatedArr) => {
                     });
     
                     if (!checkProduct) {
-                        reject({
-                            status: 'ERR',
-                            message: 'The Product is not defined'
-                        })
+                        reject('The Product is not defined');
                     }else{
                         // If the product doesn't exist in the transHistory, add it
                         currentTransHis.push({ ...updatedProduct });
@@ -574,10 +502,7 @@ const deleteTransHis = (userId, deletedArr) => {
     
             // Check if the user exists
             if (!user) {
-                reject({
-                    status: 'ERR',
-                    message: 'The user is not defined'
-                })
+                reject('The user is not defined');
             }
     
             // Get the current transHistory from the user or initialize an empty array
@@ -585,10 +510,7 @@ const deleteTransHis = (userId, deletedArr) => {
     
             // Check if updatedArr is an array
             if (!Array.isArray(deletedArr)) {
-                reject({
-                    status: 'ERR',
-                    message: 'Invalid data format. deletedArr must be an array.'
-                })
+                reject('Invalid data format. DeletedArr must be an array.');
             }
     
             for(const deletedProduct of deletedArr){
@@ -598,10 +520,7 @@ const deleteTransHis = (userId, deletedArr) => {
                     // If the product exists in the transHistory, remove it
                     currentTransHis.splice(productIndex, 1);
                 } else {
-                    reject({
-                        status: 'ERR',
-                        message: 'The Product is not in the transHistory'
-                    })
+                    reject('The Product is not in the transHistory');
                 }
             }
     
