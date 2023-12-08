@@ -10,10 +10,7 @@ const createCategory = (newCategory)=>{
                 cateId: cateId
             })
             if(checkCategory!==null){
-                reject({
-                    status: 'ERR',
-                    message: 'The name of Category is already'
-                })
+                reject('The name of Category is already');
             }
             if(checkCategory===null){
                 const createCategory = await Category.create({
@@ -41,10 +38,7 @@ const updateCategory = (id, data)=>{
                 cateId: id
             })
             if(checkCategory === null){
-                reject({
-                    status: 'ERR',
-                    message: 'The Category is not defined'
-                })
+                reject('The Category is not defined');
             }
            const updatedCategory = await Category.findOneAndUpdate({ cateId: id }, { $set: data }, { new: true })
             resolve({
@@ -81,10 +75,7 @@ const getDetailsCategory = (id)=>{
                 cateId: id
             })
             if(category === null){
-                reject({
-                    status: 'ERR',
-                    message: 'The Category is not defined'
-                })
+                reject('The Category is not defined');
             }
             resolve({
                 status: 'OK',
@@ -104,10 +95,7 @@ const deleteCategory = (id)=>{
                 cateId: id
             })
             if(checkCategory === null){
-                reject({
-                    status: 'ERR',
-                    message: 'The Category is not defined'
-                })
+                reject('The Category is not defined');
             }
             await Category.findOneAndDelete({ cateId: id })
             resolve({

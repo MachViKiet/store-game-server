@@ -15,10 +15,7 @@ const createProduct = async (newProduct) => {
             });
 
             if (checkCate === null) {
-                reject({
-                    status: 'ERR',
-                    message: 'The category is not defined'
-                });
+                reject('The Category is not defined');
             }
 
             const checkProduct = await Product.findOne({
@@ -26,19 +23,13 @@ const createProduct = async (newProduct) => {
             });
 
             if (checkProduct !== null) {
-                reject({
-                    status: 'ERR',
-                    message: 'The name of the product already exists'
-                });
+                reject('The name of the product already exists');
             }
 
             const checkPublisher = await User.findById(publisher);
 
             if (checkPublisher === null) {
-                reject({
-                    status: 'ERR',
-                    message: 'The user is not defined'
-                });
+                reject('The user is not defined');
             }
 
             if (checkProduct === null && checkPublisher!==null && checkCate!==null) {
@@ -80,10 +71,7 @@ const updateProduct = (id, data)=>{
                 _id: id
             })
             if(checkProduct === null){
-                resolve({
-                    status: 'OK',
-                    message: 'The product is not defined'
-                })
+                reject('The product is not defined');
             }
            const updatedProduct = await Product.findByIdAndUpdate(id, data, {new: true})
             resolve({
@@ -139,10 +127,7 @@ const getDetailsProduct = (id)=>{
                 _id: id
             })
             if(product === null){
-                resolve({
-                    status: 'OK',
-                    message: 'The product is not defined'
-                })
+                reject('The product is not defined');
             }
             resolve({
                 status: 'OK',
@@ -180,10 +165,7 @@ const getTypeProduct = (type) => {
             });
 
             if (products.length === 0) {
-                reject({
-                    status: 'ERR',
-                    message: 'No products found for the specified category type'
-                });
+                reject('No products found for the specified category type');
             }
 
             const formattedProducts = products.map(product => ({
@@ -213,10 +195,7 @@ const getTopRatedProducts = () => {
                 .limit(6) 
 
             if (topRated.length === 0) {
-                reject({
-                    status: 'ERR',
-                    message: 'No products found'
-                });
+                reject('No products found');
             }
 
             const formatted = topRated.map(product => ({
@@ -243,10 +222,7 @@ const deleteProduct = (id)=>{
                 _id: id
             })
             if(checkProduct === null){
-                resolve({
-                    status: 'OK',
-                    message: 'The product is not defined'
-                })
+                reject('The product is not defined');
             }
             await Product.findByIdAndDelete(id)
             resolve({
