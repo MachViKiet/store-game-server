@@ -13,9 +13,7 @@ router.get('/getAll-user', authMiddleware(['Admin']), userController.getAllUser)
 
 router.get('/getInfo/:id',userController.getInfo)
 
-
 router.get('/getDetails-user/:id', userController.getDetailsUser)
-
 
 router.post('/refresh-token', userController.refreshToken),
 
