@@ -20,7 +20,6 @@ const createProduct = async (newProduct) => {
 
             if (checkCate === null) {
                 reject('The Category is not defined');
-                reject('The Category is not defined');
             }
 
             const checkProduct = await Product.findOne({
