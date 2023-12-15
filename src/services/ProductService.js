@@ -1,7 +1,9 @@
 const Product = require("../models/Products")
 const Categories = require("../models/Categories");
 const User = require("../models/Users");
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
+const crypto = require('crypto');
+
 const { generalAccessToken, generalRefreshToken } = require("./JwtService")
 
 const createProduct = async (newProduct) => {
@@ -9,6 +11,8 @@ const createProduct = async (newProduct) => {
         const { title, release_date, categories, price, banner_url, desc, rating, reviews_count, developer, short_desc, img_urls, vid_urls, publisher } = newProduct;
 
         try {
+            const hashPublisher = hashString(publisher);
+
             const Category = categories.split(';')[0].trim();
             const checkCate = await Categories.findOne({
                 cateName: Category
@@ -26,13 +30,16 @@ const createProduct = async (newProduct) => {
                 reject('The name of the product already exists');
             }
 
-            const checkPublisher = await User.findById(publisher);
+
+            const checkPublisher = await User.findOne({
+                _id: publisher
+            });
 
             if (checkPublisher === null) {
                 reject('The user is not defined');
             }
 
-            if (checkProduct === null && checkPublisher!==null && checkCate!==null) {
+            if (checkProduct === null && checkPublisher !== null && checkCate !== null) {
 
                 const createProduct = await Product.create({
                     title,
@@ -47,7 +54,7 @@ const createProduct = async (newProduct) => {
                     short_desc,
                     img_urls: img_urls.split(';').map(url => url.trim()),
                     vid_urls: vid_urls.split(';').map(url => url.trim()),
-                    publisher
+                    publisher: hashPublisher
                 });
 
                 if (createProduct) {
@@ -64,22 +71,22 @@ const createProduct = async (newProduct) => {
     });
 };
 
-const updateProduct = (id, data)=>{
-    return new Promise(async(resolve, reject)=>{
-        try{
+const updateProduct = (id, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
             const checkProduct = await Product.findOne({
                 _id: id
             })
-            if(checkProduct === null){
+            if (checkProduct === null) {
                 reject('The product is not defined');
             }
-           const updatedProduct = await Product.findByIdAndUpdate(id, data, {new: true})
+            const updatedProduct = await Product.findByIdAndUpdate(id, data, { new: true })
             resolve({
                 status: 'OK',
                 message: 'Update product success',
                 data: updatedProduct
             })
-        }catch(e){
+        } catch (e) {
             reject(e)
         }
     })
@@ -120,13 +127,13 @@ const updateAllProductUrls = async () => {
 };
 
 
-const getDetailsProduct = (id)=>{
-    return new Promise(async(resolve, reject)=>{
-        try{
+const getDetailsProduct = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
             const product = await Product.findOne({
                 _id: id
             })
-            if(product === null){
+            if (product === null) {
                 reject('The product is not defined');
             }
             resolve({
@@ -134,15 +141,15 @@ const getDetailsProduct = (id)=>{
                 message: 'SUCCESS',
                 data: product
             })
-        }catch(e){
+        } catch (e) {
             reject(e)
         }
     })
 }
 
-const getAllProduct = ()=>{
-    return new Promise(async(resolve, reject)=>{
-        try{
+const getAllProduct = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
             const allProduct = await Product.find()
             resolve({
                 status: 'OK',
@@ -150,11 +157,42 @@ const getAllProduct = ()=>{
                 data: allProduct
 
             })
-        }catch(e){
+        } catch (e) {
             reject(e)
         }
     })
 }
+
+const getProductsByPublisher = async (publisherId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Hash the publisher ID consistently during retrieval
+            const hashedPublisherId = hashString(publisherId);
+
+            // Retrieve products by the hashed publisher ID
+            const products = await Product.find({ publisher: hashedPublisherId });
+
+            if (!products || products.length === 0) {
+                reject('No products found for the specified publisher');
+            } else {
+                resolve({
+                    status: 'OK',
+                    message: 'SUCCESS',
+                    data: products
+                });
+            }
+        } catch (e) {
+            console.error('Error in getProductsByPublisher:', e);
+            reject(`Error in getProductsByPublisher: ${e.message}`);
+        }
+    });
+};
+
+// Hash function for demonstration purposes
+function hashString(str) {
+    return crypto.createHash('sha256').update(str).digest('hex');
+}
+
 
 
 const getTypeProduct = (type) => {
@@ -191,8 +229,8 @@ const getTopRatedProducts = () => {
     return new Promise(async (resolve, reject) => {
         try {
             const topRated = await Product.find()
-                .sort({ rating: -1 }) 
-                .limit(6) 
+                .sort({ rating: -1 })
+                .limit(6)
 
             if (topRated.length === 0) {
                 reject('No products found');
@@ -215,13 +253,13 @@ const getTopRatedProducts = () => {
     });
 };
 
-const deleteProduct = (id)=>{
-    return new Promise(async(resolve, reject)=>{
-        try{
+const deleteProduct = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
             const checkProduct = await Product.findOne({
                 _id: id
             })
-            if(checkProduct === null){
+            if (checkProduct === null) {
                 reject('The product is not defined');
             }
             await Product.findByIdAndDelete(id)
@@ -229,7 +267,7 @@ const deleteProduct = (id)=>{
                 status: 'OK',
                 message: 'Delete product success',
             })
-        }catch(e){
+        } catch (e) {
             reject(e)
         }
     })
@@ -241,6 +279,7 @@ module.exports = {
     updateProduct,
     updateAllProductUrls,
     getAllProduct,
+    getProductsByPublisher,
     getTypeProduct,
     getTopRatedProducts,
     getDetailsProduct,

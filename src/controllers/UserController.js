@@ -8,20 +8,35 @@ const createUser= async(req,res)=>{
         const isCheckEmail = reg.test(email)
         const allowedRoles =['Customer', 'Seller'];
 
-        if(!name || !email || !password || !confirmPassword || !phone || !role){
+        if(!name && !email && !password && !confirmPassword && !phone && !role){
             return res.status(404).json({
                 status: 'ERR',
-                message: `Input is required`
+                message: 'Please input your information'
+            })
+        } else if(!name){
+            return res.status(404).json({
+                status: 'ERR',
+                message: 'Please input your name'
+            })
+        }else if(!email){
+            return res.status(404).json({
+                status: 'ERR',
+                message: 'Please input your email'
+            })
+        } else if(!password){
+            return res.status(404).json({
+                status: 'ERR',
+                message: 'Please input your password'
             })
         }else if(!isCheckEmail) {
             return res.status(404).json({
                 status: 'ERR',
-                message: 'The input is email'
+                message: 'Email format is invalid. Please check the email and try again.'
             })
         }else if(password!==confirmPassword){
             return res.status(404).json({
                 status: 'ERR',
-                message: 'The input is equal confirm password'
+                message: `Passwords don't match. Please try again.`
             })
         }else if (!allowedRoles.includes(role)) {
             return res.status(404).json({
@@ -44,15 +59,25 @@ const loginUser= async(req,res)=>{
         const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
         const isCheckEmail = reg.test(email)
 
-        if(!email || !password ){
+        if(!email && !password ){
             return res.status(404).json({
                 status: 'ERR',
-                message: 'The input is required'
+                message: 'Please input your email and password'
             })
-        }else if(!isCheckEmail) {
+        } else if(!email){
             return res.status(404).json({
                 status: 'ERR',
-                message: 'The input is email'
+                message: 'Please input your email'
+            })
+        } else if(!password){
+            return res.status(404).json({
+                status: 'ERR',
+                message: 'Please input your password'
+            })
+        } else if(!isCheckEmail) {
+            return res.status(404).json({
+                status: 'ERR',
+                message: 'Email format is invalid. Please check the email and try again.'
             })
         }
         const response = await UserService.loginUser(req.body)
