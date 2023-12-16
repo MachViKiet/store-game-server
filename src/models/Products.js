@@ -16,7 +16,7 @@ const productSchema = new mongoose.Schema(
         img_urls: {type: Array, require:true},
         vid_urls: {type: Array, require:true},
 
-        publisher: {type: mongoose.Schema.Types.ObjectId,  ref: 'Users', require: true},
+        publisher: {type: String, require: true},
 
     },
     {

@@ -64,6 +64,27 @@ const getAllProduct = async(req,res)=>{
     }
 }
 
+const getProductsByPublisher = async (req, res) => {
+    try {
+        const publisher = req.params.id;
+
+        if (!publisher) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'Publisher ID is required'
+            });
+        }
+
+        const response = await ProductService.getProductsByPublisher(publisher);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(500).json({
+            message: e
+        });
+    }
+};
+
+
 const getDetailsProduct = async(req,res)=>{
     try{
         const productId = req.params.id
@@ -141,6 +162,7 @@ module.exports = {
     updateAllProductUrls,
     getTypeProduct,
     getAllProduct,
+    getProductsByPublisher,
     getTopRatedProducts,
     getDetailsProduct,
     deleteProduct
