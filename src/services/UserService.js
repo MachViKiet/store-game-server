@@ -634,14 +634,6 @@ const getRecommendations = (userId) => {
             if(!user) {
                 reject('The user is not defined');
             }
-            //Get the top 75 rated products
-            // topRatedProducts = await Product.runCommand({
-            //     find: 'products',
-            //     filter: {},
-            //     sort: {rating:1},
-            //     projection: {categories:1, price:1, rating:1, reviews_count:1},
-            //     limit: 75
-            // })['cursor']['firstBatch'].toArray()
             topRatedProducts = await Product.find({},{categories:1, price:1, rating:1, reviews_count:1}).sort({rating:1}).limit(75).exec()
             //Get the products in user's cart and wishlist to evaluate
             //Obtain all categories that exists in user's cart and wishlist
