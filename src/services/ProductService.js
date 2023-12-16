@@ -20,7 +20,6 @@ const createProduct = async (newProduct) => {
 
             if (checkCate === null) {
                 reject('The Category is not defined');
-                reject('The Category is not defined');
             }
 
             const checkProduct = await Product.findOne({
@@ -195,8 +194,6 @@ function hashString(str) {
     return crypto.createHash('sha256').update(str).digest('hex');
 }
 
-
-
 const getTypeProduct = (type) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -232,7 +229,7 @@ const getTopRatedProducts = () => {
         try {
             const topRated = await Product.find()
                 .sort({ rating: -1 })
-                .limit(6)
+                .limit(12)
 
             if (topRated.length === 0) {
                 reject('No products found');
