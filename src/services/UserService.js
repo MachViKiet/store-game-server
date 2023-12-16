@@ -2,6 +2,7 @@ const User = require("../models/Users")
 const Product = require("../models/Products")
 const bcrypt = require("bcrypt")
 const { generalAccessToken, generalRefreshToken } = require("./JwtService")
+const { getTopRatedProducts } = require("./ProductService")
 
 const createUser = (newUser)=>{
     return new Promise(async(resolve, reject)=>{
@@ -539,7 +540,140 @@ const deleteTransHis = (userId, deletedArr) => {
             reject(e)
         }
     })
+};
+
+/**
+ * Perform min-max scaling on an array of numbers
+ * @param {Array} arr: An array of numbers
+ * @returns scaled array
+ */
+function minmaxScaler(arr, min=0, max=1) {
+    old_max = Math.max.apply(null, arr)
+    old_min = Math.min.apply(null, arr)
+    new_max = max
+    new_min = min
+
+    var X_minArr = arr.map(function (values) {
+        return values - old_min;
+      });
+      // X_std = (X - X.min()) / (X.max() - X.min())
+      var X_std = X_minArr.map(function (values) {
+        return values / (old_max - old_min);
+      });
+      // X_scaled = X_std * (max - min) + min
+      var X_scaled = X_std.map(function (values) {
+        return values * (new_max - new_min) + new_min;
+      });
+    
+    return X_scaled;    
 }
+
+/**
+ * Calculate scores for a list of products.
+ * Score of a product depends on its price, rating, reviews count and category.
+ * @param {*} arr : The list of products
+ * @param {*} fav_cats : A set of categories for products to match with. Can be empty.
+ * @returns a list of scores corresponding to the products
+ */
+function calScores(arr, fav_cats) {
+    //Initialization
+    scores = []
+    ratings = []
+    prices = []
+    reviews_counts = []
+    cat_score = []
+    //Iterate through the product list to create arrays of attributes
+    for (const product of arr) {
+        ratings.push(product['rating'])
+        prices.push(product['price'])
+        reviews_counts.push(product['reviews_count'])
+        //For category, we find if it is one of the user's favorite categories or not
+        if (fav_cats.has(product['categories'])) {
+            cat_score.push(1)
+        }
+        else {
+            cat_score.push(0)
+        }
+    }
+    //Perform min-max scaling on all numeric attributes
+    ratings = minmaxScaler(ratings)
+    prices = minmaxScaler(prices)
+    reviews_counts = minmaxScaler(reviews_counts)
+    //Calculating scores
+    for (let i=0; i < arr.length; i++) {
+        //Calculate score by formula
+        score = 0.3*ratings[i] + 0.2*(prices[i]*-1) + 0.3*reviews_counts[i] + 0.3*cat_score[i]
+        scores.push(score)
+    }
+    return scores
+}
+
+function findIndexesOfMaxValues(arr, n) {
+    // Create an array of objects with the original index and value
+    const indexedArray = arr.map((value, index) => ({ value, index }));
+
+    // Sort the array in descending order based on values
+    indexedArray.sort((a, b) => b.value - a.value);
+
+    // Extract the first n indices from the sorted array
+    const maxIndices = indexedArray.slice(0, n).map(item => item.index);
+
+    return maxIndices;
+}
+
+/**
+ * Generate products curated to the user's wishlist/cart
+ * @param {*} userId : Id of the user
+ * @returns List of curated products
+ */
+const getRecommendations = (userId) => {
+    return new Promise(async(resolve, reject)=>{
+        try {
+            //Find and validate user
+            const user = await User.findById(userId);
+            if(!user) {
+                reject('The user is not defined');
+            }
+            //Get the top 75 rated products
+            // topRatedProducts = await Product.runCommand({
+            //     find: 'products',
+            //     filter: {},
+            //     sort: {rating:1},
+            //     projection: {categories:1, price:1, rating:1, reviews_count:1},
+            //     limit: 75
+            // })['cursor']['firstBatch'].toArray()
+            topRatedProducts = await Product.find({},{categories:1, price:1, rating:1, reviews_count:1}).sort({rating:1}).limit(75).exec()
+            //Get the products in user's cart and wishlist to evaluate
+            //Obtain all categories that exists in user's cart and wishlist
+            cartProducts = user['cart']
+            wishProducts = user['wishlist']
+            fav_cats = []
+            for (const product of cartProducts) {
+                fav_cats.push(product['categories'])
+            }
+            for (const product of wishProducts) {
+                fav_cats.push(product['categories'])
+            }
+            fav_cats = new Set(fav_cats)
+            //Calculate score for each product
+            scores = calScores(topRatedProducts, fav_cats)
+            //Get 6 top product
+            chosenIndices = findIndexesOfMaxValues(scores, 6)
+            chosenIds = chosenIndices.map(index => topRatedProducts[index]['_id'])
+            recommendedProducts = await Product.find({_id: {$in: chosenIds}})
+
+            resolve({
+                status: 'OK',
+                message: 'Recommended products returned',
+                data: recommendedProducts
+            })
+        }
+        catch(e){
+            console.log(e)
+            reject(e)
+        }
+    })
+};
 
 module.exports = {
     createUser,
@@ -557,5 +691,7 @@ module.exports = {
     deleteWishList,
 
     updateTransHis,
-    deleteTransHis
+    deleteTransHis,
+
+    getRecommendations
 }

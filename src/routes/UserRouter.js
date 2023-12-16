@@ -26,4 +26,6 @@ router.delete('/delete-wishlist/:id', authMiddleware(['Customer']), userControll
 router.put('/update-transHis/:id', authMiddleware(['Customer']), userController.updateTransHis),
 router.delete('/delete-transHis/:id', authMiddleware(['Customer']), userController.deleteTransHis),
 
+//POST - userId in body - token in headers
+router.post('/getrecommendations', authMiddleware(['Customer']), userController.getRecommendations)
 module.exports = router

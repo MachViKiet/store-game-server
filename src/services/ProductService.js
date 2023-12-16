@@ -192,7 +192,7 @@ const getTopRatedProducts = () => {
         try {
             const topRated = await Product.find()
                 .sort({ rating: -1 }) 
-                .limit(6) 
+                .limit(12) 
 
             if (topRated.length === 0) {
                 reject('No products found');
