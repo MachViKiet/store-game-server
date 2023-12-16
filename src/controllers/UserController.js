@@ -315,6 +315,25 @@ const deleteTransHis = async(req,res)=>{
     }
 }
 
+const getRecommendations = async(req,res) =>{
+    try{
+        const {userId} = req.body
+        if (!userId){
+            return res.status(404).json({
+                status: 'ERR', 
+                message: 'The userId is required'
+            })
+        }
+
+        const response = await UserService.getRecommendations(userId)
+        return res.status(200).json(response)
+    }catch(e){
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 module.exports = {
     createUser,
     loginUser,
@@ -332,5 +351,7 @@ module.exports = {
     deleteWishList,
 
     updateTransHis,
-    deleteTransHis
+    deleteTransHis,
+
+    getRecommendations
 }
