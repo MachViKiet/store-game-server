@@ -156,6 +156,26 @@ const deleteProduct = async(req,res)=>{
     }
 }
 
+const searchBar = async(req, res) => {
+    try{
+        const query = req.body.query
+        //const token = req.headers
+        if(!query){
+            return res.status(404).json({
+                status: 'ERR', 
+                message: 'The query is required'
+            })
+        }
+
+        const response = await ProductService.searchBar(query)
+        return res.status(200).json(response)
+    }catch(e){
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 module.exports = {
     createProduct,
     updateProduct,
@@ -165,5 +185,6 @@ module.exports = {
     getProductsByPublisher,
     getTopRatedProducts,
     getDetailsProduct,
-    deleteProduct
+    deleteProduct,
+    searchBar
 }

@@ -4,7 +4,8 @@ const User = require("../models/Users");
 const bcrypt = require("bcrypt");
 const crypto = require('crypto');
 
-const { generalAccessToken, generalRefreshToken } = require("./JwtService")
+const { generalAccessToken, generalRefreshToken } = require("./JwtService");
+const { resolve } = require("path");
 
 const createProduct = async (newProduct) => {
     return new Promise(async (resolve, reject) => {
@@ -271,7 +272,25 @@ const deleteProduct = (id) => {
         }
     })
 }
-
+/**
+ * 
+ * @param {*} query : The text query to perform search on
+ * @returns List of 10 games from the query results
+ */
+const searchBar = (query) => {
+    return new Promise( async (resolve, reject) => {
+        try {
+            queryResults = await Product.find({ title: {$regex: query, $options:"i"}}, {title:1}).limit(10)
+            resolve({
+                status: 'OK',
+                message: 'Returned query results',
+                data: queryResults
+            })
+        }catch (e) {
+            reject(e)
+        }
+    })
+}
 
 module.exports = {
     createProduct,
@@ -282,5 +301,6 @@ module.exports = {
     getTypeProduct,
     getTopRatedProducts,
     getDetailsProduct,
-    deleteProduct
+    deleteProduct,
+    searchBar
 }

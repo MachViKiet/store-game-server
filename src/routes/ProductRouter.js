@@ -12,5 +12,6 @@ router.get('/getProByPub/:id',  productController.getProductsByPublisher)
 router.get('/getType-Pro/:type', productController.getTypeProduct)
 router.get('/getTopRated-Pro', productController.getTopRatedProducts)
 router.delete('/deletePro/:id',authMiddleware(['Admin', 'Seller']),  productController.deleteProduct)
-
+//POST - query in body
+router.post('/searchBar', productController.searchBar)
 module.exports = router
