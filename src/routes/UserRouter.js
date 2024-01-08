@@ -19,6 +19,7 @@ router.post('/refresh-token', userController.refreshToken),
 
 router.put('/update-cart/:id', authMiddleware(['Customer']), userController.updateCart),
 router.delete('/delete-cart/:id', authMiddleware(['Customer']), userController.deleteCart),
+router.delete('/delete-allcart/:id', authMiddleware(['Customer']), userController.deleteAllCart),
 
 router.put('/update-wishlist/:id', authMiddleware(['Customer']), userController.updateWishList),
 router.delete('/delete-wishlist/:id', authMiddleware(['Customer']), userController.deleteWishList),

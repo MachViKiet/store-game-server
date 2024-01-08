@@ -174,65 +174,6 @@ const getInfo = (id)=>{
     })
 }
 
-// có amount
-// const updateObject = async (userId, updatedArr) => {
-//     try {
-//         const user = await User.findById(userId);
-
-//         // Check if the user exists
-//         if (!user) {
-//             throw new Error('User not found');
-//         }
-
-//         // Get the current cart from the user or initialize an empty array
-//         const currentCart = user.cart || [];
-
-//         // Check if updatedArr is an array
-//         if (!Array.isArray(updatedArr)) {
-//             throw new Error('Invalid data format. updatedArr must be an array.');
-//         }
-
-//         for (const updatedProduct of updatedArr) {
-//             // Find the product in the current cart by title
-//             const existingProduct = currentCart.find(item => item.title === updatedProduct.title);
-
-//             if (existingProduct) {
-//                 // If the product exists, update the amount
-//                 existingProduct.amount = (existingProduct.amount || 0) + (updatedProduct.amount || 1);
-//             } else {
-//                 const checkProduct = await Product.findOne({
-//                     title: updatedProduct.title,
-//                 });
-
-//                 if (!checkProduct) {
-//                     throw new Error('The Product is not defined');
-//                 }
-
-//                 // If the product doesn't exist in the cart, add it with the provided amount or 1
-//                 currentCart.push({ ...updatedProduct, amount: updatedProduct.amount || 1 });
-//             }
-//         }
-
-//         // Update the cart in the user object
-//         user.cart = currentCart;
-
-//         // Mark the 'cart' field as modified
-//         user.markModified('cart');
-
-//         // Save the updated user to the database
-//         const updatedUser = await user.save();
-
-//         return {
-//             status: 'OK',
-//             message: 'Cart updated successfully',
-//             data: updatedUser
-//         };
-//     } catch (error) {
-//         console.error('Error updating cart:', error);
-//         throw new Error('Error updating cart: ' + error.message);
-//     }
-// };
-
 const updateCart = (userId, updatedArr) => {
     return new Promise(async(resolve, reject)=>{
         try {
@@ -334,7 +275,35 @@ const deleteCart = (userId, deletedArr) => {
             reject(e)
         }
     })
-}
+};
+
+const deleteAllCart = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Find the user by ID
+            const user = await User.findById(userId);
+
+            // Check if the user exists
+            if (!user) {
+                reject('The user is not defined');
+            }
+
+            // Clear the cart in the user's data
+            user.cart = [];
+
+            // Save the updated user to the database
+            const deletedUser = await user.save();
+
+            resolve({
+                status: 'OK',
+                message: 'All products removed from the cart successfully',
+                data: deletedUser
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 
 const updateWishList = (userId, updatedArr) => {
     return new Promise(async(resolve, reject)=>{
@@ -678,6 +647,7 @@ module.exports = {
 
     updateCart,
     deleteCart,
+    deleteAllCart,
     
     updateWishList,
     deleteWishList,

@@ -233,6 +233,26 @@ const deleteCart = async(req,res)=>{
     }
 }
 
+const deleteAllCart = async(req,res)=>{
+    try{
+        const userId = req.params.id
+        //const token = req.headers
+        if(!userId){
+            return res.status(404).json({
+                status: 'ERR',
+                message: 'The userId is required'
+            })
+        }
+
+        const response = await UserService.deleteAllCart(userId)
+        return res.status(200).json(response)
+    }catch(e){
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 const updateWishList = async(req,res)=>{
     try{
         const userId = req.params.id
@@ -346,6 +366,7 @@ module.exports = {
 
     updateCart,
     deleteCart,
+    deleteAllCart,
 
     updateWishList,
     deleteWishList,
