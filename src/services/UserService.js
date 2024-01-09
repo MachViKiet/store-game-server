@@ -4,6 +4,11 @@ const bcrypt = require("bcrypt")
 const { generalAccessToken, generalRefreshToken } = require("./JwtService")
 const { getTopRatedProducts } = require("./ProductService")
 
+/**
+ * Authenticate and add new user account to the database
+ * @param {*} newUser : information of the new user
+ * @returns 
+ */
 const createUser = (newUser)=>{
     return new Promise(async(resolve, reject)=>{
         const {name,email, password, phone, role, cart, wishlist, transHistory } = newUser
@@ -44,6 +49,11 @@ const createUser = (newUser)=>{
     })
 }
 
+/**
+ * Authenticate a user's credentials to log in
+ * @param {*} userLogin : login credentials
+ * @returns the user id and its tokens
+ */
 const loginUser = (userLogin)=>{
     return new Promise(async(resolve, reject)=>{
         const {email, password, confirmPassword} = userLogin
@@ -82,6 +92,12 @@ const loginUser = (userLogin)=>{
     })
 }
 
+/**
+ * Update information of a user
+ * @param {*} id : id of the user
+ * @param {*} data : information to be updated
+ * @returns 
+ */
 const updateUser = (id, data)=>{
     return new Promise(async(resolve, reject)=>{
         try{
@@ -103,6 +119,11 @@ const updateUser = (id, data)=>{
     })
 }
 
+/**
+ * Delete a user by id
+ * @param {*} id 
+ * @returns 
+ */
 const deleteUser = (id)=>{
     return new Promise(async(resolve, reject)=>{
         try{
@@ -123,6 +144,10 @@ const deleteUser = (id)=>{
     })
 }
 
+/**
+ * Get all users in the database
+ * @returns list of users
+ */
 const getAllUser = ()=>{
     return new Promise(async(resolve, reject)=>{
         try{
@@ -139,6 +164,11 @@ const getAllUser = ()=>{
     })
 }
 
+/**
+ * Get all information of a user
+ * @param {*} id : id of the user
+ * @returns 
+ */
 const getDetailsUser = (id)=>{
     return new Promise(async(resolve, reject)=>{
         try{
@@ -174,6 +204,12 @@ const getInfo = (id)=>{
     })
 }
 
+/**
+ * Update the user's cart
+ * @param {*} userId : id of the user
+ * @param {*} updatedArr : the new cart to update
+ * @returns 
+ */
 const updateCart = (userId, updatedArr) => {
     return new Promise(async(resolve, reject)=>{
         try {
@@ -230,6 +266,12 @@ const updateCart = (userId, updatedArr) => {
     })
 };
 
+/**
+ * Delete a product in the user's cart
+ * @param {*} userId : id of the user
+ * @param {*} deletedArr : the products to delete
+ * @returns 
+ */
 const deleteCart = (userId, deletedArr) => {
     return new Promise(async(resolve, reject)=>{
         try {
@@ -277,6 +319,11 @@ const deleteCart = (userId, deletedArr) => {
     })
 };
 
+/**
+ * Delete the entire cart of a user
+ * @param {*} userId 
+ * @returns 
+ */
 const deleteAllCart = (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -305,6 +352,12 @@ const deleteAllCart = (userId) => {
     });
 };
 
+/**
+ * Update the wishlist
+ * @param {*} userId 
+ * @param {*} updatedArr 
+ * @returns 
+ */
 const updateWishList = (userId, updatedArr) => {
     return new Promise(async(resolve, reject)=>{
         try {
@@ -361,6 +414,12 @@ const updateWishList = (userId, updatedArr) => {
     })
 };
 
+/**
+ * Delete items in the wishlist
+ * @param {*} userId 
+ * @param {*} deletedArr 
+ * @returns 
+ */
 const deleteWishList = (userId, deletedArr) => {
     return new Promise(async(resolve, reject)=>{
         try {
