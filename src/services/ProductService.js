@@ -7,6 +7,11 @@ const crypto = require('crypto');
 const { generalAccessToken, generalRefreshToken } = require("./JwtService");
 const { resolve } = require("path");
 
+/**
+ * Add a product to the database
+ * @param {*} newProduct : a dict containing information of the product
+ * @returns the created product
+ */
 const createProduct = async (newProduct) => {
     return new Promise(async (resolve, reject) => {
         const { title, release_date, categories, price, banner_url, desc, rating, reviews_count, developer, short_desc, img_urls, vid_urls, publisher } = newProduct;
@@ -72,6 +77,12 @@ const createProduct = async (newProduct) => {
     });
 };
 
+/**
+ * Update an existing product
+ * @param {*} id : id of the product
+ * @param {*} data : the new info to be updated
+ * @returns the updated product
+ */
 const updateProduct = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -128,7 +139,11 @@ const updateAllProductUrls = async () => {
     }
 };
 
-
+/**
+ * Get all information of a product
+ * @param {*} id : id of the product
+ * @returns 
+ */
 const getDetailsProduct = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -149,6 +164,10 @@ const getDetailsProduct = (id) => {
     })
 }
 
+/**
+ * Get all products in database
+ * @returns list of products
+ */
 const getAllProduct = () => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -165,6 +184,11 @@ const getAllProduct = () => {
     })
 }
 
+/**
+ * Get products according to publisher
+ * @param {*} publisherId : id of the publisher
+ * @returns list of products
+ */
 const getProductsByPublisher = async (publisherId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -190,11 +214,20 @@ const getProductsByPublisher = async (publisherId) => {
     });
 };
 
-// Hash function for demonstration purposes
+/**
+ * Hash function for demonstration purposes
+ * @param {*} str : string to hash
+ * @returns hashed result
+ */
 function hashString(str) {
     return crypto.createHash('sha256').update(str).digest('hex');
 }
 
+/**
+ * Get products based on category
+ * @param {*} type : category of the product
+ * @returns list of products
+ */
 const getTypeProduct = (type) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -225,6 +258,10 @@ const getTypeProduct = (type) => {
     });
 };
 
+/**
+ * Get the top 12 most rated products
+ * @returns List of products
+ */
 const getTopRatedProducts = () => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -252,7 +289,11 @@ const getTopRatedProducts = () => {
         }
     });
 };
-
+/**
+ * Delete a product by its id
+ * @param {*} id : the product id
+ * @returns None
+ */
 const deleteProduct = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -273,7 +314,7 @@ const deleteProduct = (id) => {
     })
 }
 /**
- * 
+ * Search a collection of games from the database based on the query
  * @param {*} query : The text query to perform search on
  * @returns List of 10 games from the query results
  */

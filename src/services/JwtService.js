@@ -2,6 +2,11 @@ const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 dotenv.config()
 
+/**
+ * Generate access token
+ * @param {*} payload 
+ * @returns token
+ */
 const generalAccessToken = async (payload)=>{
     const access_token = jwt.sign({
         payload
@@ -10,6 +15,11 @@ const generalAccessToken = async (payload)=>{
     return access_token
 }
 
+/**
+ * Refresh current access token
+ * @param {*} payload 
+ * @returns token
+ */
 const generalRefreshToken = async (payload)=>{
     const refresh_token = jwt.sign({
         payload
